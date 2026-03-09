@@ -1,6 +1,8 @@
 ### AGENTS.MD
 Bu dosya bu projede çalışacak AI ya da Developerın uyması gereken koşulsuz, şartsız ve istisnasız sağlaması gereken kurallar dizesini içerir.
 
+Bu projede çalışırken herhangi bir karar bulmak istersen [DECISIONS.MD](.ai/governance/DECISIONS.MD) dosyasına bakabilirsin.
+
 ---
 
 ## 1) NASIL ÇALIŞILIR? (ZORUNLU İŞ AKIŞI)
