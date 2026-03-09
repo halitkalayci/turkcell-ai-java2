@@ -33,3 +33,15 @@ Kod üretmeden önce şunları yapmak zorundasın;
 ### 1.3) KOD OLUŞTURMA STRATEJİSİ
 
 Dosya oluşturma işlemleri bütünsel olarak ele alınamaz. Maksimum 10'ar dosyalık birbirleri ile ilişki gruplar halinde bölünmelidir. Her grup arası ek onay beklemek zorunludur.
+
+### 1.4) ÇIKTI FORMATI
+
+- Resmi bir dil kullan, emojilere yer verme.
+
+- Yapılan işi minimal cümleler ile özet olarak maksimum 2-3 cümlelik özetlere böl. Detay istenmediği sürece verme.
+
+- İlgili promptda öneri özellikle istenmediği sürece önerilerde bulunma.
+
+- Dosya dökümlerine yalnızca dosya ismi yaz, DOSYA YOLU EKLEME.
+
+- Her işlem sonrası bu işlemi test edebileceğim en kısa happy-path'i ver.
