@@ -32,4 +32,18 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResponse("VALIDATION_ERROR", "Request validation failed", details));
     }
+
+    @ExceptionHandler(ProductNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleProductNotFound(ProductNotFoundException ex) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse("PRODUCT_NOT_FOUND", ex.getMessage(), List.of()));
+    }
+
+    @ExceptionHandler(SkuAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleSkuAlreadyExists(SkuAlreadyExistsException ex) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(new ErrorResponse("SKU_CONFLICT", ex.getMessage(), List.of()));
+    }
 }

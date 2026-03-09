@@ -1,6 +1,7 @@
 package com.turkcell.productservice;
 
 import com.turkcell.productservice.dto.*;
+import com.turkcell.productservice.service.ProductServiceV1;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -9,7 +10,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.List;
 import java.util.UUID;
 
 @Validated
@@ -17,14 +17,19 @@ import java.util.UUID;
 @RequestMapping("/api/v1/products")
 public class ProductController {
 
+    private final ProductServiceV1 productService;
+
+    public ProductController(ProductServiceV1 productService) {
+        this.productService = productService;
+    }
+
     @GetMapping
     public ResponseEntity<ProductPage> listProducts(
             @RequestParam(defaultValue = "0") @Min(0) int page,
             @RequestParam(defaultValue = "20") @Min(1) @Max(200) int size,
             @RequestParam(required = false) String q
     ) {
-        // TODO: implement service layer
-        return ResponseEntity.ok(new ProductPage(List.of(), page, size, 0, 0));
+        return ResponseEntity.ok(productService.list(page, size, q));
     }
 
     @PostMapping
@@ -32,18 +37,15 @@ public class ProductController {
             @RequestBody @Valid ProductCreateRequest request,
             UriComponentsBuilder uriBuilder
     ) {
-        // TODO: implement service layer
-        UUID id = UUID.randomUUID();
-        ProductResponse response = new ProductResponse(id, request.name(), request.price(), request.stock(), request.sku());
+        ProductResponse response = productService.create(request);
         return ResponseEntity
-                .created(uriBuilder.path("/api/v1/products/{id}").buildAndExpand(id).toUri())
+                .created(uriBuilder.path("/api/v1/products/{id}").buildAndExpand(response.id()).toUri())
                 .body(response);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponse> getProductById(@PathVariable UUID id) {
-        // TODO: implement service layer
-        return ResponseEntity.ok(new ProductResponse(id, "placeholder", 0.0, 0, "PLACEHOLDER"));
+        return ResponseEntity.ok(productService.getById(id));
     }
 
     @PutMapping("/{id}")
@@ -51,19 +53,17 @@ public class ProductController {
             @PathVariable UUID id,
             @RequestBody @Valid ProductUpdateRequest request
     ) {
-        // TODO: implement service layer
-        return ResponseEntity.ok(new ProductResponse(id, request.name(), request.price(), request.stock(), request.sku()));
+        return ResponseEntity.ok(productService.replace(id, request));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable UUID id) {
-        // TODO: implement service layer
+        productService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/update-stock")
     public ResponseEntity<StockUpdateResponse> updateStock(@RequestBody @Valid StockUpdateRequest request) {
-        // TODO: implement service layer
-        return ResponseEntity.ok(new StockUpdateResponse(request.id(), "placeholder", request.stock()));
+        return ResponseEntity.ok(productService.updateStock(request));
     }
 }
