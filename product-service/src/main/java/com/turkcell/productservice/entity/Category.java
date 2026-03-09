@@ -3,34 +3,26 @@ package com.turkcell.productservice.entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "products")
-public class Product {
+@Table(name = "categories")
+public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false, length = 200)
+    @Column(nullable = false, unique = true, length = 100)
     private String name;
 
-    @Column(length = 255)
+    @Column(length = 500)
     private String description;
 
-    @Column(nullable = false)
-    private double price;
-
-    @Column(nullable = false)
-    private int stock;
-
-    @Column(nullable = false, unique = true, length = 64)
-    private String sku;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
-    private Category category;
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
+    private List<Product> products = new ArrayList<>();
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -49,14 +41,11 @@ public class Product {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public Product() {}
+    public Category() {}
 
-    public Product(String name, String description, double price, int stock, String sku) {
+    public Category(String name, String description) {
         this.name = name;
         this.description = description;
-        this.price = price;
-        this.stock = stock;
-        this.sku = sku;
     }
 
     public UUID getId() { return id; }
@@ -67,17 +56,8 @@ public class Product {
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
 
-    public double getPrice() { return price; }
-    public void setPrice(double price) { this.price = price; }
-
-    public int getStock() { return stock; }
-    public void setStock(int stock) { this.stock = stock; }
-
-    public String getSku() { return sku; }
-    public void setSku(String sku) { this.sku = sku; }
-
-    public Category getCategory() { return category; }
-    public void setCategory(Category category) { this.category = category; }
+    public List<Product> getProducts() { return products; }
+    public void setProducts(List<Product> products) { this.products = products; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
 
