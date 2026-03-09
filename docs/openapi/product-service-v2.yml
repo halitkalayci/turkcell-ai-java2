@@ -1,8 +1,8 @@
 openapi: 3.0.3
 info:
   title: Product Service API
-  version: 1.0.0
-  description: Product microservice contract (contract-first).
+  version: 2.0.0
+  description: Product microservice contract v2 (contract-first). Adds mandatory `description` field.
 
 servers:
   - url: http://localhost:8081
@@ -12,12 +12,11 @@ tags:
     description: Product management endpoints
 
 paths:
-  /api/v1/products:
+  /api/v2/products:
     get:
       tags: [Products]
       summary: List products
-      operationId: listProducts
-      deprecated: true
+      operationId: listProductsV2
       security: []
       parameters:
         - name: page
@@ -61,8 +60,7 @@ paths:
     post:
       tags: [Products]
       summary: Create product
-      operationId: createProduct
-      deprecated: true
+      operationId: createProductV2
       security:
         - bearerAuth: []
       requestBody:
@@ -96,12 +94,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
-  /api/v1/products/{id}:
+  /api/v2/products/{id}:
     get:
       tags: [Products]
       summary: Get product by id
-      operationId: getProductById
-      deprecated: true
+      operationId: getProductByIdV2
       security: []
       parameters:
         - name: id
@@ -127,8 +124,7 @@ paths:
     put:
       tags: [Products]
       summary: Replace product by id
-      operationId: replaceProduct
-      deprecated: true
+      operationId: replaceProductV2
       security:
         - bearerAuth: []
       parameters:
@@ -173,8 +169,7 @@ paths:
     delete:
       tags: [Products]
       summary: Delete product by id
-      operationId: deleteProduct
-      deprecated: true
+      operationId: deleteProductV2
       security:
         - bearerAuth: []
       parameters:
@@ -194,12 +189,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
-  /api/v1/products/update-stock:
+  /api/v2/products/update-stock:
     put:
       tags: [Products]
       summary: Update product stock
-      operationId: updateStock
-      deprecated: true
+      operationId: updateStockV2
       security:
         - bearerAuth: []
       requestBody:
@@ -238,7 +232,7 @@ components:
   schemas:
     Product:
       type: object
-      required: [id, name, price, stock, sku]
+      required: [id, name, description, price, stock, sku]
       properties:
         id:
           type: string
@@ -248,6 +242,10 @@ components:
           type: string
           minLength: 1
           maxLength: 200
+        description:
+          type: string
+          minLength: 3
+          maxLength: 255
         price:
           type: number
           format: double
@@ -267,13 +265,17 @@ components:
 
     ProductCreateRequest:
       type: object
-      required: [name, price, stock, sku]
+      required: [name, description, price, stock, sku]
       additionalProperties: false
       properties:
         name:
           type: string
           minLength: 1
           maxLength: 200
+        description:
+          type: string
+          minLength: 3
+          maxLength: 255
         price:
           type: number
           format: double
@@ -290,13 +292,17 @@ components:
 
     ProductUpdateRequest:
       type: object
-      required: [name, price, stock, sku]
+      required: [name, description, price, stock, sku]
       additionalProperties: false
       properties:
         name:
           type: string
           minLength: 1
           maxLength: 200
+        description:
+          type: string
+          minLength: 3
+          maxLength: 255
         price:
           type: number
           format: double
@@ -320,6 +326,10 @@ components:
           type: string
           minLength: 1
           maxLength: 200
+        description:
+          type: string
+          minLength: 3
+          maxLength: 255
         price:
           type: number
           format: double

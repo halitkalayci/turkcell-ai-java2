@@ -94,3 +94,17 @@ başarılı.
 - API'lerde talep edilen herhangi bir değişiklik BREAKING ise değişikliği yapma. Kullanıcıyı uyar ve dur.
 
 - BREAKING değişikliklerde versiyon yükseltme stratejisini öner.
+
+### 3.1) BREAKING CHANGE KRİTERLERİ
+
+Aşağıdakilerden herhangi biri varsa değişiklik BREAKING'dir:
+
+- Request şemasına zorunlu alan eklenmesi
+- Mevcut bir alanın kaldırılması veya yeniden adlandırılması
+- Bir alanın tipinin değiştirilmesi
+- Mevcut bir endpoint'in kaldırılması veya path'inin değiştirilmesi
+- Response şemasından alan çıkarılması
+- HTTP durum kodlarının değiştirilmesi
+
+Planlama aşamasında bu listeyle karşılaştırma yapılmadan implementasyona geçilemez.
+
