@@ -1,0 +1,6 @@
+openapi: 3.0.3
+info:
+  title: Order Service API
+  description: Order Service - Turkcell AI Java2
+  version: 1.0.0
+paths: {}
