@@ -86,3 +86,11 @@ başarılı.
 ### 2.3 Swagger UI
 
 - Tüm servisler Swagger implementasyonu yapmalıdır.
+
+## 3) VERSİYONLAMA
+
+- API'lerde path versiyonlama kullanılır. örneğin `/api/v1/products`
+
+- API'lerde talep edilen herhangi bir değişiklik BREAKING ise değişikliği yapma. Kullanıcıyı uyar ve dur.
+
+- BREAKING değişikliklerde versiyon yükseltme stratejisini öner.
