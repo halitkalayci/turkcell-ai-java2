@@ -30,6 +30,8 @@ Kod üretmeden önce şunları yapmak zorundasın;
 
 - Eğer yeni varsa bir bağımlılık matrisi hazırla. (Ne, hangi versiyonla, neden eklendi?)
 
+- Planı sun, onay almadan asla implementasyona başlama.
+
 ### 1.3) KOD OLUŞTURMA STRATEJİSİ
 
 Dosya oluşturma işlemleri bütünsel olarak ele alınamaz. Maksimum 10'ar dosyalık birbirleri ile ilişki gruplar halinde bölünmelidir. Her grup arası ek onay beklemek zorunludur.
