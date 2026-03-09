@@ -47,3 +47,42 @@ Dosya oluşturma işlemleri bütünsel olarak ele alınamaz. Maksimum 10'ar dosy
 - Dosya dökümlerine yalnızca dosya ismi yaz, DOSYA YOLU EKLEME.
 
 - Her işlem sonrası bu işlemi test edebileceğim en kısa happy-path'i ver.
+
+örneğin:
+
+Bir spring product-service endpoint happy-path verirken:
+````
+
+`cd product-service`
+`mvn spring-boot:run`
+`GET http://localhost:8081/products` -> OK Gözüküyorsa test 
+başarılı.
+
+````
+
+
+## 2) CONTRACT-FIRST YAKLAŞIMI
+
+### 2.1 OpenAPI doğruluğun tek kaynağıdır (Single Source of Truth)
+
+- API sözleşmeleri şu dizinde bulunur: `/docs/openapi`
+
+- Her servis **kendi OpenAPI dosyasına sahip olmalıdır**:
+  - `docs/openapi/product-service-v1.yml`
+  - `docs/openapi/order-service-v1.yml`
+
+- Swagger UI, bu sözleşmelerden üretilir.
+
+- Implementasyon **her zaman sözleşmeye uymalıdır**; sözleşme implementasyona göre değiştirilemez.
+
+### 2.2 Kod Üretim Politikası (Code Generation Policy)
+
+- OpenAPI araçları **yalnızca repoda zaten mevcutsa** kullanılabilir.
+
+- Açık onay olmadan **yeni bir OpenAPI generator bağımlılığı eklenmemelidir**.
+
+- Eğer generator yoksa, controller ve DTO’lar **spec’e uygun olacak şekilde manuel olarak implement edilmelidir**.
+
+### 2.3 Swagger UI
+
+- Tüm servisler Swagger implementasyonu yapmalıdır.

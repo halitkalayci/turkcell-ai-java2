@@ -1,0 +1,392 @@
+openapi: 3.0.3
+info:
+  title: Product Service API
+  version: 1.0.0
+  description: Product microservice contract (contract-first).
+
+servers:
+  - url: http://localhost:8081
+
+tags:
+  - name: Products
+    description: Product management endpoints
+
+paths:
+  /api/v1/products:
+    get:
+      tags: [Products]
+      summary: List products
+      operationId: listProducts
+      security: []
+      parameters:
+        - name: page
+          in: query
+          required: false
+          description: 0-based page index
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - name: size
+          in: query
+          required: false
+          description: Page size
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 200
+            default: 20
+        - name: q
+          in: query
+          required: false
+          description: Optional search by name or sku (implementation-defined)
+          schema:
+            type: string
+            minLength: 1
+      responses:
+        "200":
+          description: Paged product list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductPage"
+        "400":
+          description: Invalid query parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    post:
+      tags: [Products]
+      summary: Create product
+      operationId: createProduct
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProductCreateRequest"
+      responses:
+        "201":
+          description: Created
+          headers:
+            Location:
+              description: URL of created resource
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: SKU already exists (unique constraint)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/products/{id}:
+    get:
+      tags: [Products]
+      summary: Get product by id
+      operationId: getProductById
+      security: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Product
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    put:
+      tags: [Products]
+      summary: Replace product by id
+      operationId: replaceProduct
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProductUpdateRequest"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: SKU already exists (unique constraint)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    delete:
+      tags: [Products]
+      summary: Delete product by id
+      operationId: deleteProduct
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/products/update-stock:
+    put:
+      tags: [Products]
+      summary: Update product stock
+      operationId: updateStock
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StockUpdateRequest"
+      responses:
+        "200":
+          description: Stock updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StockUpdateResponse"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Product:
+      type: object
+      required: [id, name, price, stock, sku]
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Product identifier (UUID)
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        price:
+          type: number
+          format: double
+          minimum: 0
+          exclusiveMinimum: true
+          description: Must be > 0
+        stock:
+          type: integer
+          format: int32
+          minimum: 1
+          description: Must be a positive integer (> 0)
+        sku:
+          type: string
+          minLength: 1
+          maxLength: 64
+          description: Stock code (unique). Enforced by storage layer; conflicts return 409.
+
+    ProductCreateRequest:
+      type: object
+      required: [name, price, stock, sku]
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        price:
+          type: number
+          format: double
+          minimum: 0
+          exclusiveMinimum: true
+        stock:
+          type: integer
+          format: int32
+          minimum: 0
+        sku:
+          type: string
+          minLength: 1
+          maxLength: 64
+
+    ProductUpdateRequest:
+      type: object
+      required: [name, price, stock, sku]
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        price:
+          type: number
+          format: double
+          minimum: 0
+          exclusiveMinimum: true
+        stock:
+          type: integer
+          format: int32
+          minimum: 1
+        sku:
+          type: string
+          minLength: 1
+          maxLength: 64
+
+    ProductPatchRequest:
+      type: object
+      additionalProperties: false
+      description: Any subset of fields can be provided. Validation still applies when present.
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        price:
+          type: number
+          format: double
+          minimum: 0
+          exclusiveMinimum: true
+        stock:
+          type: integer
+          format: int32
+          minimum: 1
+        sku:
+          type: string
+          minLength: 1
+          maxLength: 64
+
+    ProductPage:
+      type: object
+      required: [items, page, size, totalItems, totalPages]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Product"
+        page:
+          type: integer
+          minimum: 0
+        size:
+          type: integer
+          minimum: 1
+        totalItems:
+          type: integer
+          minimum: 0
+        totalPages:
+          type: integer
+          minimum: 0
+
+    ErrorResponse:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+          example: VALIDATION_ERROR
+        message:
+          type: string
+          example: price must be greater than 0
+        details:
+          type: array
+          items:
+            type: string
+          description: Optional list of field-level messages
+
+    StockUpdateRequest:
+      type: object
+      required: [id, stock]
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          format: uuid
+        stock:
+          type: integer
+          format: int32
+          minimum: 0
+
+    StockUpdateResponse:
+      type: object
+      required: [id, name, stock]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        stock:
+          type: integer
+          format: int32
