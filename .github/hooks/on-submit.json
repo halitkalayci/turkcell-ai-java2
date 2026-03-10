@@ -1,0 +1,18 @@
+{
+	"hooks": {
+		"UserPromptSubmit": [
+			{
+				"type": "command",
+				"command": "echo MERHABA"
+			},
+			{
+				"type":"command",
+				"command": "powershell -Command \"([Console]::In.ReadToEnd() | ConvertFrom-Json).prompt\""
+			},
+			{
+				"type": "command",
+				"command": "powershell -Command \"([Console]::In.ReadToEnd() | ConvertFrom-Json).cwd\""
+			}
+		]
+	}
+}
