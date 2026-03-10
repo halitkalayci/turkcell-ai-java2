@@ -109,4 +109,3 @@ Aşağıdakilerden herhangi biri varsa değişiklik BREAKING'dir:
 - HTTP durum kodlarının değiştirilmesi
 
 Planlama aşamasında bu listeyle karşılaştırma yapılmadan implementasyona geçilemez.
-
