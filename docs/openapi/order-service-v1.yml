@@ -1,6 +1,104 @@
 openapi: 3.0.3
 info:
   title: Order Service API
-  description: Order Service - Turkcell AI Java2
-  version: 1.0.0
-paths: {}
+  version: v1.0.0
+  description: order-service microservice contract (contract-first).
+
+servers:
+  - url: http://localhost:8082
+
+tags:
+  - name: Orders
+    description: Order management endpoints
+
+paths:
+  /api/v1/orders:
+    post:
+      tags: [Orders]
+      summary: Create order
+      operationId: createOrder
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderCreateRequest"
+      responses:
+        "201":
+          description: Created
+          headers:
+            Location:
+              description: URL of created resource
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Order:
+      type: object
+      required: [id, totalPrice, orderDate, status]
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Order identifier (UUID)
+        totalPrice:
+          type: number
+          format: double
+          description: Total price of the order
+        orderDate:
+          type: string
+          format: date-time
+          description: Date and time the order was placed
+        status:
+          type: string
+          enum: [PENDING, CONFIRMED, CANCELLED]
+          description: Current status of the order
+
+    OrderCreateRequest:
+      type: object
+      additionalProperties: false
+      required: [totalPrice, orderDate, status]
+      properties:
+        totalPrice:
+          type: number
+          format: double
+          description: Total price of the order
+        orderDate:
+          type: string
+          format: date-time
+          description: Date and time the order was placed
+        status:
+          type: string
+          enum: [PENDING, CONFIRMED, CANCELLED]
+          description: Initial status of the order
+
+    ErrorResponse:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        details:
+          type: array
+          items:
+            type: string
