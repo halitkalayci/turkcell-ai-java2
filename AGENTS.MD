@@ -109,3 +109,8 @@ Aşağıdakilerden herhangi biri varsa değişiklik BREAKING'dir:
 - HTTP durum kodlarının değiştirilmesi
 
 Planlama aşamasında bu listeyle karşılaştırma yapılmadan implementasyona geçilemez.
+
+
+## 4) DÖKÜMANTASYON OLUŞTURMA
+
+- Herhangi bir aksiyon sonucu bir markdown dosyası oluşturman istendiğinde kendini 400 satıra indeksle. Eğer 400 satırı geçmek zorunda hissedersen dosya bölünme stratejisi uygulamaya çalış ve kullanıcıya söyle.
