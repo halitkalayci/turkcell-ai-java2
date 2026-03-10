@@ -1,0 +1,37 @@
+spring:
+  application:
+    name: identity-service
+
+  profiles:
+    active: dev
+
+  jpa:
+    open-in-view: false
+    show-sql: false
+
+server:
+  port: 8082
+  error:
+    include-message: NEVER
+    include-binding-errors: NEVER
+    include-stacktrace: NEVER
+    include-exception: false
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when-authorized
+
+jwt:
+  expiration:
+    access-token: 1800000
+    refresh-token: 2592000000
